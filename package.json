@@ -29,7 +29,8 @@
     "webpack-dev-server": "^3.1.4"
   },
   "dependencies": {
-    "domready": "^1.0.8"
+    "domready": "^1.0.8",
+    "mapbox-gl": "^1.8.1"
   },
   "scripts": {
     "start": "webpack-dev-server",
