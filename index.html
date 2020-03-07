@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>Property Taxes</title>
+    <title>Property Taxes (70% complete)</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <link href='https://api.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.css' rel='stylesheet' />
@@ -11,10 +11,11 @@
     <div id="app" class="full-height">
       <div class="flex-down">
         <h1>Property Taxes</h1>
-        <h3>It affects everyone...</h3>
+        <h5>Homes are supposed to be assessed based on how much they would sell for, independent of how much money they are worth. Yet, this analysis shows that lower value homes pay more than higher value homes. This map directly calculates this rate, where if a state or county had a value of 1, poor and rich homes are assessed at the same rate. If the value is .5, poor homes are assessed at twice the rate of rich homes.</h5>
       </div>
       <div class="flex full-height">
         <div class="sidebar flex-down full-height">
+          <p>Zoom in to see county level detail. Use the buttons below to filter which counties are shown based on their total population.</p>
           <button id='button0' class="filterbutton">0-50,000</button>
           <button id='button1' class="filterbutton">50,001-250,000</button>
           <button id='button2' class="filterbutton">250,001-1,000,000</button>

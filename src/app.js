@@ -253,7 +253,7 @@ function temp(data){
     .attr("y", 10)
     .attr("text-anchor", "middle")  
     .style("font-size", "24px") 
-    .text("Regressivity by State")
+    .text("Regressivity by County")
 
   //subtitle
   svg.append("text")
@@ -280,13 +280,13 @@ function temp(data){
 
   //data sourcing
   svg.append("text")             
-    .attr("x", width - 75)
+    .attr("x", width - 150)
     .attr("y", height + 37.5)
     .style("font-size", "12px") 
     .text("Source: CoreLogic");
 
   //legend
-  var legend_x = width - 100;
+  var legend_x = width - 150;
   var legend_y = height - 350;
   var offset = 20;
 
