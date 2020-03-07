@@ -2,6 +2,7 @@ const domReady = require('domready');
 import './stylesheets/main.css';
 import {csv} from 'd3-fetch';
 import mapboxgl from 'mapbox-gl';
+import * as d3 from "d3";
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiZXJobGFuZ28iLCJhIjoiY2s3OThuZHYxMGlmejNkbXk4djNhZTdjdiJ9._774XdciUdaC6RN-6vQmSA';
 
@@ -17,13 +18,14 @@ domReady(() => {
 });
 
 
+
+
+
 function map() {
   var zoomThreshold = 5;
   var color_ls = ['#F2F12D', '#EED322', '#E6B71E', '#DA9C20', '#CA8323', '#B86B25', '#A25626', '#8B4225', '#723122'];
   var cutoff_r95_vals = [0, 0.5, 0.8, 0.9, 0.95, 1, 1.05, 1.1, Infinity];
-  
   var v2 = new mapboxgl.LngLatBounds([-126, 23], [-65, 51])
-
 
   var map = new mapboxgl.Map({
     container: 'map',
@@ -154,34 +156,41 @@ function map() {
 
 function othergraphs(state, county) {
   console.log(county)
-  console.log(state)
+  //console.log(state)
+
+  county.forEach(function(d) {
+    d.total_pop = +d.total_pop;
+  });
+
+  console.log(county)
+  temp(county)
+
 };
 
-function empty(){
+function temp(data){
+  console.log(d3.max(data, d => d.total_pop));
+  
   var margin = {top: 20, right: 20, bottom: 40, left: 60};
   var width = 800 - margin.left - margin.right;
   var height = 500 - margin.top - margin.bottom;
 
-  var x = d3.scaleLog().domain([0.1,10]).range([width, 0]);
-  var y = d3.scaleLog().domain([0.1,10]).range([0,height]);
+  var x = d3.scaleLinear().domain(d3.extent(data, d => d.prd)).range([0, width]);
+  var y = d3.scaleLog().domain([1, d3.max(data, d => d.total_pop)]).range([height, 0]);
 
-  var svg = d3.select("#graph").append("svg")
+  var svg = d3.select("#othergraphs").append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
       .append("g")
       .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")");
-
-  var iris = d3.json('iris.json')
-  .then((data) => { svg.selectAll("dot")
+ 
+  svg.selectAll("dot")
     .data(data)
     .enter().append("circle")
     .attr("r", 5)
-    .attr("cx", function(data) { return x(data.sepalLength); })
-      .attr("cy", function(data) { return y(data.petalLength); })
-      .attr("class", function(data) { return data.species; })
-  })
-  .catch(err => console.log(err));
+    .attr("cx", function(data) { return x(data.prd); })
+    .attr("cy", function(data) { return y(data.total_pop); })
+    .attr("class", function(data) { return data.density_bin; })
 
   svg.append("g")
     .attr("transform", "translate(0," + height + ")")
@@ -196,7 +205,7 @@ function empty(){
     .attr("y", 10)
     .attr("text-anchor", "middle")  
     .style("font-size", "24px") 
-    .text("Sepal Length vs. Petal Length")
+    .text("Regressivity by State")
 
   //subtitle
   svg.append("text")
@@ -204,14 +213,14 @@ function empty(){
     .attr("y", 40)
     .attr("text-anchor", "middle")  
     .style("font-size", "16px") 
-    .text("A Reverse Log-Log Plot")
+    .text("Subtitle")
 
   //x label
   svg.append("text")             
     .attr("x", width/2)
     .attr("y", height + 35)
     .style("text-anchor", "middle")
-    .text("Sepal Length (log)");
+    .text("PRD");
 
   //y label
   svg.append("text")     
@@ -219,14 +228,14 @@ function empty(){
     .attr("y", 0 - margin.left / 1.5)
     .attr("transform", "rotate(-90)")        
     .style("text-anchor", "middle")
-    .text("Petal Length (log)");
+    .text("Population");
 
   //data sourcing
   svg.append("text")             
     .attr("x", width - 75)
     .attr("y", height + 37.5)
     .style("font-size", "12px") 
-    .text("Source: Iris Dataset");
+    .text("Source: CoreLogic");
 
   //legend
   var legend_x = width - 100;
@@ -236,41 +245,53 @@ function empty(){
   svg.append("text")
     .attr("x", legend_x)
     .attr("y", legend_y - 10)
-    .text("Legend")
+    .text("Population")
 
   svg.append("rect")
     .attr("x", legend_x)
     .attr("y", legend_y)
     .attr("width", 10)
     .attr("height", 10)
-    .attr("class", "virginica")
+    .attr("class", "0-50,000")
 
   svg.append("rect")
     .attr("x", legend_x)
     .attr("y", legend_y + offset)
     .attr("width", 10)
     .attr("height", 10)
-    .attr("class", "versicolor")
+    .attr("class", "50,001-250,000")
 
   svg.append("rect")
     .attr("x", legend_x)
     .attr("y", legend_y + 2*offset)
     .attr("width", 10)
     .attr("height", 10)
-    .attr("class", "setosa")
+    .attr("class", "250,001-1,000,000")
+
+  svg.append("rect")
+    .attr("x", legend_x)
+    .attr("y", legend_y + 3*offset)
+    .attr("width", 10)
+    .attr("height", 10)
+    .attr("class", "Over 1,000,000")
 
   svg.append("text")
     .attr("x", legend_x + offset)
     .attr("y", legend_y + 10)
-    .text("virginica")
+    .text("0-50,000")
 
   svg.append("text")
     .attr("x", legend_x + offset)
     .attr("y", legend_y + 10 + offset)
-    .text("versicolor")
+    .text("50,001-250,000")
 
   svg.append("text")
     .attr("x", legend_x + offset)
     .attr("y", legend_y + 10 + 2*offset)
-    .text("setosa")
+    .text("250,001-1,000,000")
+
+  svg.append("text")
+    .attr("x", legend_x + offset)
+    .attr("y", legend_y + 10 + 3*offset)
+    .text("Over 1,000,000")
   }

@@ -70,3 +70,19 @@ body {
   width: 10px;
   }
  
+
+  [class="0-50,000"] {
+    fill: blue;
+  }
+  
+  [class="50,001-250,000"] {
+    fill: green;
+  }
+  
+  [class="250,001-1,000,000"] {
+    fill: red;
+  }
+
+  [class="Over 1,000,000"] {
+    fill: orange;
+  }
