@@ -111,11 +111,14 @@ function map() {
         'fill-opacity': 0.75
         }
         });
-        
+
         map.on('click', 'states-layer', function(e) {
+          var caption = Math.round(parseFloat(e.features[0].properties.weighted_mean) * 1000) / 1000
+
+
           new mapboxgl.Popup()
           .setLngLat(e.lngLat)
-          .setHTML(e.features[0].properties.NAME + ', ' + e.features[0].properties.r95_to_r5)
+          .setHTML(e.features[0].properties.NAME + '<br> Regressivity level: ' + caption)
           .addTo(map);
 
           console.log(e.features[0].properties.GEOID)
@@ -147,6 +150,38 @@ function map() {
           
         map.on('mouseleave', 'counties-layer', function() {
         map.getCanvas().style.cursor = '';
+
+        document.getElementById('button0').addEventListener("click", function(e) {
+          map.setFilter('counties-layer')
+          map.setFilter('counties-layer', ['==', 'density_bin', '0-50,000']);
+        }
+        );
+
+        document.getElementById('button1').addEventListener("click", function(e) {
+          map.setFilter('counties-layer')
+          map.setFilter('counties-layer', ['==', 'density_bin', '50,001-250,000']);
+        }
+        );
+
+        document.getElementById('button2').addEventListener("click", function(e) {
+          map.setFilter('counties-layer')
+          map.setFilter('counties-layer', ['==', 'density_bin', '250,001-1,000,000']);
+        }
+        );
+
+        document.getElementById('button3').addEventListener("click", function(e) {
+          map.setFilter('counties-layer')
+          map.setFilter('counties-layer', ['==', 'density_bin', 'Over 1,000,000']);
+        }
+        );
+
+        document.getElementById('button4').addEventListener("click", function(e) {
+          map.setFilter('counties-layer')
+        }
+        );
+
+
+
         });
 
 
