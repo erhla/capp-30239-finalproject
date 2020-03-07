@@ -23,7 +23,7 @@ domReady(() => {
 
 function map() {
   var zoomThreshold = 5;
-  var color_ls = ['#F2F12D', '#EED322', '#E6B71E', '#DA9C20', '#CA8323', '#B86B25', '#A25626', '#8B4225', '#723122'];
+  var color_ls = ['#D73027', '#F46D43', '#FDAE61', '#FEE08B', '#D9EF8B', '#A6D96A', '#66BD63', '#1A9850'];
   var cutoff_r95_vals = [0, 0.5, 0.8, 0.9, 0.95, 1, 1.05, 1.1, Infinity];
   var v2 = new mapboxgl.LngLatBounds([-126, 23], [-65, 51])
 
@@ -74,9 +74,7 @@ function map() {
         cutoff_r95_vals[6],
         color_ls[6],
         cutoff_r95_vals[7],
-        color_ls[7],
-        cutoff_r95_vals[8],
-        color_ls[8]
+        color_ls[7]
         ],
         'fill-opacity': 0.75
         }
@@ -108,9 +106,7 @@ function map() {
         cutoff_r95_vals[6],
         color_ls[6],
         cutoff_r95_vals[7],
-        color_ls[7],
-        cutoff_r95_vals[8],
-        color_ls[8]
+        color_ls[7]
         ],
         'fill-opacity': 0.75
         }
@@ -119,16 +115,18 @@ function map() {
         map.on('click', 'states-layer', function(e) {
           new mapboxgl.Popup()
           .setLngLat(e.lngLat)
-          .setHTML(e.features[0].properties.NAME)
+          .setHTML(e.features[0].properties.NAME + ', ' + e.features[0].properties.r95_to_r5)
           .addTo(map);
 
           console.log(e.features[0].properties.GEOID)
           });
 
         map.on('click', 'counties-layer', function(e) {
+          var caption = Math.round(parseFloat(e.features[0].properties.r95_to_r5) * 1000) / 1000
+                 
           new mapboxgl.Popup()
           .setLngLat(e.lngLat)
-          .setHTML(e.features[0].properties.NAME)
+          .setHTML(e.features[0].properties.NAME + '<br> Regressivity level: ' + caption)
           .addTo(map);
 
           console.log(e.features[0].properties.GEOID)
@@ -151,25 +149,40 @@ function map() {
         map.getCanvas().style.cursor = '';
         });
 
+
+
+        for (let i = 0; i < color_ls.length; i++) {
+          var layer = cutoff_r95_vals[i] + " to " + cutoff_r95_vals[i+1];
+          var color = color_ls[i];
+          var item = document.createElement('div');
+          var key = document.createElement('span');
+          key.className = 'legend-key';
+          key.style.backgroundColor = color;
+        
+          var value = document.createElement('span');
+          value.innerHTML = layer;
+          item.appendChild(key);
+          item.appendChild(value);
+          legend.appendChild(item);
+        }
+
     });
 }
 
 function othergraphs(state, county) {
   console.log(county)
-  //console.log(state)
+  console.log(state)
 
   county.forEach(function(d) {
     d.total_pop = +d.total_pop;
   });
 
-  console.log(county)
   temp(county)
 
 };
 
 function temp(data){
-  console.log(d3.max(data, d => d.total_pop));
-  
+
   var margin = {top: 20, right: 20, bottom: 40, left: 60};
   var width = 800 - margin.left - margin.right;
   var height = 500 - margin.top - margin.bottom;
