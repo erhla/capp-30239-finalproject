@@ -15,24 +15,70 @@
       </div>
       <div class="flex full-height">
         <div class="sidebar flex-down full-height">
-          <p>Zoom in to see county level detail. Use the buttons below to filter which counties are shown based on their total population.</p>
-          <button id='button0' class="filterbutton">0-50,000</button>
-          <button id='button1' class="filterbutton">50,001-250,000</button>
-          <button id='button2' class="filterbutton">250,001-1,000,000</button>
-          <button id='button3' class="filterbutton">Over 1,000,000</button>
-          <button id='button4' class="filterbutton">Reset</button>
+          <p>Zoom in to see county level detail. Use the selector below to filter which counties are shown based on different attributes.</p>
+          <p>Which attribute would you like to filter on?</p>
+          
+          <select id='master_selector'>
+            <option value="population_selector">Population</option>
+            <option value="hs_selector">High School Diploma</option>
+            <option value="whitepop_selector">Percent White</option>
+            <option value="poverty_selector">Percent in Poverty</option>
+            <option value="hhincome_selector">Median Household Income</option>
+            <option value="age_selector">Median Age</option>
+          </select>
 
+          <div id='selectorcontainer'>
+            <select class='hiddenselector' id='population_selector'>
+              <option value="All Counties">All Counties</option>
+              <option value="0-50,000">0-50,000</option>
+              <option value="50,001-250,000">50,001-250,000</option>
+              <option value="250,001-1,000,000">250,001-1,000,000</option>
+              <option value="Over 1,000,000">Over 1,000,000</option>
+            </select>
+            <select class='hiddenselector' id='hs_selector'>
+              <option value="All Counties">All Counties</option>
+              <option value="1">Bottom Quartile (&lt;82%)</option>
+              <option value="2">2nd Quartile (&gt;82% &amp; &lt;87.5%)</option>
+              <option value="3">3rd Quartile (&gt;87.5% &amp; &lt;91%)</option>
+              <option value="4">Top Quartile (&gt;91%)</option>
+            </select>
+            <select class='hiddenselector' id='whitepop_selector'>
+              <option value="All Counties">All Counties</option>
+              <option value="1">Bottom Quartile (&lt;65%)</option>
+              <option value="2">2nd Quartile (&gt;65% &amp; &lt;84%)</option>
+              <option value="3">3rd Quartile (&gt;84% &amp; &lt;93%)</option>
+              <option value="4">Top Quartile (&gt;93%)</option>
+            </select>
+            <select class='hiddenselector' id='poverty_selector'>
+              <option value="All Counties">All Counties</option>
+              <option value="1">Bottom Quartile (&lt;11%)</option>
+              <option value="2">2nd Quartile (&gt;11% &amp; &lt;15%)</option>
+              <option value="3">3rd Quartile (&gt;15% &amp; &lt;19.5%)</option>
+              <option value="4">Top Quartile (&gt;19.5%)</option>
+            </select>
+            <select class='hiddenselector' id='hhincome_selector'>
+              <option value="All Counties">All Counties</option>
+              <option value="1">Bottom Quartile (&lt;$41k)</option>
+              <option value="2">2nd Quartile (&gt;$41k &amp; &lt;$48k)</option>
+              <option value="3">3rd Quartile (&gt;$48k &amp; &lt;$55k)</option>
+              <option value="4">Top Quartile (&gt;$55k)</option>
+            </select>
+            <select class='hiddenselector' id='age_selector'>
+              <option value="All Counties">All Counties</option>
+              <option value="1">Bottom Quartile (&lt;38yrs)</option>
+              <option value="2">2nd Quartile (&gt;38yrs &amp; &lt;41yrs)</option>
+              <option value="3">3rd Quartile (&gt;41yrs &amp; &lt;44yrs)</option>
+              <option value="4">Top Quartile (&gt;44yrs)</option>
+            </select>
+          </div>
         </div>
         <div class="main-area flex full-height full-width">
           <div id='map'></div>
           <div class='map-overlay' id='legend'></div>
         </div>
       </div>
-      <div id="othergraphs">
-        
-      </div>
+      <div id="othergraphs"></div>
     </div>
-    
     <script src="bundle.js"></script>
   </body>
 </html>

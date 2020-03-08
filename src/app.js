@@ -7,25 +7,16 @@ import * as d3 from "d3";
 mapboxgl.accessToken = 'pk.eyJ1IjoiZXJobGFuZ28iLCJhIjoiY2s3OThuZHYxMGlmejNkbXk4djNhZTdjdiJ9._774XdciUdaC6RN-6vQmSA';
 
 domReady(() => {
-  Promise.all([
-    csv('./data/state_regressivity.csv'),
-    csv('./data/county_regressivity.csv')
-  ]).then(d => {
-    const [state, county] = d;
-    map();
-    othergraphs(state, county);
-  })
+  listeners();
+  map();
+  othergraphs();
 });
-
-
-
-
 
 function map() {
   var zoomThreshold = 5;
   var color_ls = ['#D73027', '#F46D43', '#FDAE61', '#FEE08B', '#D9EF8B', '#A6D96A', '#66BD63', '#1A9850'];
   var cutoff_r95_vals = [0, 0.5, 0.8, 0.9, 0.95, 1, 1.05, 1.1, Infinity];
-  var v2 = new mapboxgl.LngLatBounds([-126, 23], [-65, 51])
+  var v2 = new mapboxgl.LngLatBounds([-127, 22.5], [-65, 51])
 
   var map = new mapboxgl.Map({
     container: 'map',
@@ -150,42 +141,73 @@ function map() {
           
         map.on('mouseleave', 'counties-layer', function() {
         map.getCanvas().style.cursor = '';
-
-        document.getElementById('button0').addEventListener("click", function(e) {
-          map.setFilter('counties-layer')
-          map.setFilter('counties-layer', ['==', 'density_bin', '0-50,000']);
-        }
-        );
-
-        document.getElementById('button1').addEventListener("click", function(e) {
-          map.setFilter('counties-layer')
-          map.setFilter('counties-layer', ['==', 'density_bin', '50,001-250,000']);
-        }
-        );
-
-        document.getElementById('button2').addEventListener("click", function(e) {
-          map.setFilter('counties-layer')
-          map.setFilter('counties-layer', ['==', 'density_bin', '250,001-1,000,000']);
-        }
-        );
-
-        document.getElementById('button3').addEventListener("click", function(e) {
-          map.setFilter('counties-layer')
-          map.setFilter('counties-layer', ['==', 'density_bin', 'Over 1,000,000']);
-        }
-        );
-
-        document.getElementById('button4').addEventListener("click", function(e) {
-          map.setFilter('counties-layer')
-        }
-        );
-
-
-
         });
 
+        document.getElementById('population_selector').addEventListener('change', (event) => {
+          const result = event.target.value;
+          map.setFilter('counties-layer')
+          if (result !== "All Counties"){
+            map.setFilter('counties-layer', ['==', 'density_bin', result]);
+          }
+        });
 
+        document.getElementById('hs_selector').addEventListener('change', (event) => {
+          const result = event.target.value;
+          var quartiles = [0, .8224, .8755, 0.9099, 1];
+          map.setFilter('counties-layer')
+          if (result !== "All Counties"){
+            map.setFilter('counties-layer', ["all",
+              ['>=', 'pct_high_school_or_higher', quartiles[result - 1]],
+              ['<=', 'pct_high_school_or_higher', quartiles[result]]
+            ]);
+          }
+        });
 
+        document.getElementById('whitepop_selector').addEventListener('change', (event) => {
+          const result = event.target.value;
+          var quartiles = [0, .6543, .8444, 0.9299, 1];
+          map.setFilter('counties-layer')
+          if (result !== "All Counties"){
+            map.setFilter('counties-layer', ["all",
+              ['>=', 'pct_nh_white', quartiles[result - 1]],
+              ['<=', 'pct_nh_white', quartiles[result]]
+            ]);
+          }
+        });
+
+        document.getElementById('poverty_selector').addEventListener('change', (event) => {
+          const result = event.target.value;
+          var quartiles = [0, .1142, .1522, 0.1945, 1];
+          map.setFilter('counties-layer')
+          if (result !== "All Counties"){
+            map.setFilter('counties-layer', ["all",
+              ['>=', 'pct_in_pov', quartiles[result - 1]],
+              ['<=', 'pct_in_pov', quartiles[result]]
+            ]);
+          }
+        });
+        document.getElementById('hhincome_selector').addEventListener('change', (event) => {
+          const result = event.target.value;
+          var quartiles = [0, 41103, 47914, 55476, 1000000];
+          map.setFilter('counties-layer')
+          if (result !== "All Counties"){
+            map.setFilter('counties-layer', ["all",
+              ['>=', 'median_household_income', quartiles[result - 1]],
+              ['<=', 'median_household_income', quartiles[result]]
+            ]);
+          }
+        });
+        document.getElementById('age_selector').addEventListener('change', (event) => {
+          const result = event.target.value;
+          var quartiles = [0, 38, 41.2, 44.3, 100];
+          map.setFilter('counties-layer')
+          if (result !== "All Counties"){
+            map.setFilter('counties-layer', ["all",
+              ['>=', 'median_age', quartiles[result - 1]],
+              ['<=', 'median_age', quartiles[result]]
+            ]);
+          }
+        });
         for (let i = 0; i < color_ls.length; i++) {
           var layer = cutoff_r95_vals[i] + " to " + cutoff_r95_vals[i+1];
           var color = color_ls[i];
@@ -200,31 +222,62 @@ function map() {
           item.appendChild(value);
           legend.appendChild(item);
         }
-
     });
 }
 
-function othergraphs(state, county) {
-  console.log(county)
-  console.log(state)
+function othergraphs() {
+  Promise.all([
+    csv('./data/county_regressivity.csv')
+  ]).then(d => {
+    const [county] = d;
 
-  county.forEach(function(d) {
-    d.total_pop = +d.total_pop;
-  });
-
-  temp(county)
-
+    county.forEach(function(d) {
+      d.total_pop = +d.total_pop;
+      d.prd = +d.prd;
+      d.pct_high_school_or_higher = +d.pct_high_school_or_higher;
+      d.pct_nh_white = +d.pct_nh_white;
+      d.median_age = +d.median_age;
+      d.pct_in_pov = +d.pct_in_pov;
+      d.median_household_income = +d.median_household_income;
+    });
+    console.log(county)
+    var master_selector = document.getElementById('master_selector');
+    var cur_value = master_selector.value;
+    if (cur_value === "population_selector"){
+      var cur_var = "total_pop";
+    } else if (cur_value === "hs_selector"){
+      var cur_var = "pct_high_school_or_higher"
+    } else if (cur_value === "whitepop_selector"){
+      var cur_var = "pct_nh_white"
+    } else if (cur_value === "poverty_selector"){
+      var cur_var = "pct_in_pov"
+    } else if (cur_value === "hhincome_selector"){
+      var cur_var = "median_household_income"
+    } else if (cur_value === "age_selector"){
+      var cur_var = "median_age"
+    }
+    attributeplot(county, cur_var, master_selector.options[master_selector.selectedIndex].text);
+  })
 };
 
-function temp(data){
+function attributeplot(data, target_var, target_var_title){
+  console.log(target_var)
+  console.log(target_var_title)
+
+  document.getElementById('othergraphs').innerHTML = '';
 
   var margin = {top: 20, right: 20, bottom: 40, left: 60};
   var width = 800 - margin.left - margin.right;
   var height = 500 - margin.top - margin.bottom;
 
   var x = d3.scaleLinear().domain(d3.extent(data, d => d.prd)).range([0, width]);
-  var y = d3.scaleLog().domain([1, d3.max(data, d => d.total_pop)]).range([height, 0]);
-
+  
+  if (target_var === "total_pop"){
+    var y = d3.scaleLog().domain([1, d3.max(data, d => d[target_var])]).range([height, 0]);
+  } else {
+    var y = d3.scaleLinear().domain([0, d3.max(data, d => d[target_var])]).range([height, 0]);
+  }
+  
   var svg = d3.select("#othergraphs").append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
@@ -237,7 +290,7 @@ function temp(data){
     .enter().append("circle")
     .attr("r", 5)
     .attr("cx", function(data) { return x(data.prd); })
-    .attr("cy", function(data) { return y(data.total_pop); })
+    .attr("cy", function(data) { return y(data[target_var]); })
     .attr("class", function(data) { return data.density_bin; })
 
   svg.append("g")
@@ -255,14 +308,6 @@ function temp(data){
     .style("font-size", "24px") 
     .text("Regressivity by County")
 
-  //subtitle
-  svg.append("text")
-    .attr("x", width/2)
-    .attr("y", 40)
-    .attr("text-anchor", "middle")  
-    .style("font-size", "16px") 
-    .text("Subtitle")
-
   //x label
   svg.append("text")             
     .attr("x", width/2)
@@ -276,7 +321,7 @@ function temp(data){
     .attr("y", 0 - margin.left / 1.5)
     .attr("transform", "rotate(-90)")        
     .style("text-anchor", "middle")
-    .text("Population");
+    .text(target_var_title);
 
   //data sourcing
   svg.append("text")             
@@ -342,4 +387,16 @@ function temp(data){
     .attr("x", legend_x + offset)
     .attr("y", legend_y + 10 + 3*offset)
     .text("Over 1,000,000")
-  }
+  };
+
+function listeners(){
+  document.getElementById('master_selector').addEventListener('change', (event) => {
+    const result = event.target.value;
+    var cols = document.getElementsByClassName('hiddenselector');
+    for(let i = 0; i < cols.length; i++) {
+      cols[i].style.display = 'none';
+    }
+    document.getElementById(result).style.display = 'inline';
+    othergraphs();
+  });
+};
