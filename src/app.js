@@ -240,7 +240,6 @@ function othergraphs() {
       d.pct_in_pov = +d.pct_in_pov;
       d.median_household_income = +d.median_household_income;
     });
-    console.log(county)
     var master_selector = document.getElementById('master_selector');
     var cur_value = master_selector.value;
     if (cur_value === "population_selector"){
@@ -261,8 +260,12 @@ function othergraphs() {
 };
 
 function attributeplot(data, target_var, target_var_title){
-  console.log(target_var)
-  console.log(target_var_title)
+  console.log(data)
+
+  if(target_var_title === "Select One"){
+    target_var = "total_pop";
+    target_var_title = "Total Population";
+  }
 
   document.getElementById('othergraphs').innerHTML = '';
 
