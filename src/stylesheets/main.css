@@ -17,11 +17,6 @@ body {
   text-align: center;
 }
 
-#footer {
-  display: flex;
-  flex-direction: column;
-}
-
 .flex{
   display: flex;
   padding: 0px 15px 0px 15px;
@@ -67,11 +62,9 @@ body {
   fill: red;
 }
 
-
 .Over {
   fill: orange;
 }
-
 
 .full{
   opacity: 0.15
