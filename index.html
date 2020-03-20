@@ -13,9 +13,6 @@
         <div id='title'>
           <h1>Property Taxes and Equity</h1>
         </div>
-
-
-
       </div>
       <div class="flex full-height">
         <div class="sidebar flex-down full-height">
@@ -30,12 +27,16 @@
               This relationship can be seen to the right. A value of 1 means that low and high value homes were on average assessed at the same rate.
               Values below 1 (shaded in reds and yellows) are <b>regressive</b> areas where lower value homes are assessed at higher rates than high value homes.
               For example, in the least equitable state (Alabama), low value homes are assessed at over twice the rate of high value homes on average.
-              Property assessments are roughly converted into property taxes---so in Alabama these lower value homes likely pay a tax rate double that of high value homes.
+              Property assessments are roughly converted into property taxes---so in Alabama these lower value homes likely pay a tax rate much higher that of high value homes.
             </p>
             <h2>Map Instructions</h2>
             <p>
                 Click on a state or zoom in to see county level detail.
-                When zoomed in to the county level, use the selector below to show counties with similar demographics.</p>
+                When zoomed in to the county level, use the selector below to show counties with similar demographics.
+            </p>
+            <p>
+              Note that for some counties (black or clear) sales were either unavailable or too infrequent for analysis.
+            </p>
                 <select id='master_selector'>
                   <option value="none" selected disabled hidden>Select One</option> 
                   <option value="population_selector">Population</option>
@@ -90,17 +91,21 @@
                     <option value="4">Top Quartile (&gt;44yrs)</option>
                   </select>
                 </div>
+            <h2>Regressivity by County</h2>
+            <p>
+              This graph shows all 2,600 counties for which data was available. If a county is clicked on in the map, it will appear as a large white circle in the plot.
+              If a filter is applied above, only the filtered points will be shown in the plot. The x-axis here is another metric of regressivity called Price-Related Differential (PRD).
+              A PRD greater than 1 indicates regressivity and the official standard for an acceptable PRD is between 0.98 and 1.03.
+            </p>
+            <h2>For More Information</h2>
+            <p>The code is available on <a href="https://github.com/erhla/capp-30239-finalproject">Github</a>. A data extract is available <a href="https://github.com/erhla/capp-30239-finalproject/tree/master/data">here</a>.</p>
           </div>      
         </div>
-        <div class="main-area flex full-height full-width">
+        <div class="main-area flex-down full-height full-width">
           <div id='map'></div>
           <div class='map-overlay' id='legend'></div>
+          <div id="othergraphs"></div>
         </div>
-      </div>
-      <div id="othergraphs"></div>
-      <div id='footer'>
-        <p><a href="https://github.com/erhla/capp-30239-finalproject">Github</a></p>
-        <p><a href="https://github.com/erhla/capp-30239-finalproject/tree/master/data">Data</a></p>
       </div>
     </div>
     <script src="bundle.js"></script>

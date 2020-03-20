@@ -42,7 +42,6 @@ body {
 
 .sidebar {
   width: 500px;
-  background-color: linen;
 }
 
 .main-area {
@@ -56,23 +55,35 @@ body {
   width: inherit;
 }
 
-  [class="0-50,000"] {
-    fill: blue;
-  }
-  
-  [class="50,001-250,000"] {
-    fill: green;
-  }
-  
-  [class="250,001-1,000,000"] {
-    fill: red;
-  }
+.\30 -50\,000{
+  fill: blue;
+}
 
-  [class="Over 1,000,000"] {
-    fill: orange;
-  }
+.\35 0\,001-250\,000 {
+  fill: green;
+}
+
+.\32 50\,001-1\,000\,000 {
+  fill: red;
+}
 
 
+.Over {
+  fill: orange;
+}
+
+
+.full{
+  opacity: 0.15
+}
+
+.selectedcounty {
+  opacity: 1;
+  fill: white;
+  stroke:black;
+  stroke-width: 3;
+  r: 10;
+}
 
 #legend {
   padding: 10px;
