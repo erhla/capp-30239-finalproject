@@ -9,12 +9,22 @@ body {
   font-family: Verdana, Geneva, sans-serif;
   height: 100%;
   margin: 0;
-  padding: 0;
+  padding: 0px;
   width: 100%;
 }
 
+#title {
+  text-align: center;
+}
+
+#footer {
+  display: flex;
+  flex-direction: column;
+}
+
 .flex{
-  display: flex
+  display: flex;
+  padding: 0px 15px 0px 15px;
 }
 
 .flex_down {
@@ -31,7 +41,7 @@ body {
 }
 
 .sidebar {
-  width: 200px;
+  width: 500px;
   background-color: linen;
 }
 
@@ -86,7 +96,7 @@ body {
   bottom: 0;
   right: 0;
   background: rgba(255, 255, 255, 0.8);
-  margin-right: 20px;
+  margin-right: 40px;
   font-family: Arial, sans-serif;
   overflow: auto;
   border-radius: 3px;

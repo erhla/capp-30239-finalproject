@@ -16,7 +16,7 @@ function map() {
   var zoomThreshold = 5;
   var color_ls = ['#D73027', '#F46D43', '#FDAE61', '#FEE08B', '#D9EF8B', '#A6D96A', '#66BD63', '#1A9850'];
   var cutoff_r95_vals = [0, 0.5, 0.8, 0.9, 0.95, 1, 1.05, 1.1, Infinity];
-  var v2 = new mapboxgl.LngLatBounds([-127, 22.5], [-65, 51])
+  var bounds = new mapboxgl.LngLatBounds([-127, 22.5], [-65, 51])
 
   var map = new mapboxgl.Map({
     container: 'map',
@@ -24,8 +24,11 @@ function map() {
     center: [-98, 38.88],
     minZoom: 3,
     zoom: 3,
-    maxBounds: v2 // Sets bounds as max
+    maxBounds: bounds // Sets bounds as max
     });
+
+    map.scrollZoom.disable();
+    map.addControl(new mapboxgl.NavigationControl());
 
     map.on('load', function() {
       map.addSource('weighted_mean', {
@@ -112,7 +115,10 @@ function map() {
           .setHTML(e.features[0].properties.NAME + '<br> Regressivity level: ' + caption)
           .addTo(map);
 
-          console.log(e.features[0].properties.GEOID)
+          map.flyTo({
+            center: e.lngLat,
+            zoom: 6
+          })
           });
 
         map.on('click', 'counties-layer', function(e) {
@@ -122,9 +128,6 @@ function map() {
           .setLngLat(e.lngLat)
           .setHTML(e.features[0].properties.NAME + '<br> Regressivity level: ' + caption)
           .addTo(map);
-
-          console.log(e.features[0].properties.GEOID)
-
           });
         
         map.on('mouseenter', 'states-layer', function() {
@@ -141,6 +144,10 @@ function map() {
           
         map.on('mouseleave', 'counties-layer', function() {
         map.getCanvas().style.cursor = '';
+        });
+
+        document.getElementById('master_selector').addEventListener('change', (event) => {
+          map.setFilter('counties-layer')
         });
 
         document.getElementById('population_selector').addEventListener('change', (event) => {
@@ -260,8 +267,6 @@ function othergraphs() {
 };
 
 function attributeplot(data, target_var, target_var_title){
-  console.log(data)
-
   if(target_var_title === "Select One"){
     target_var = "total_pop";
     target_var_title = "Total Population";
